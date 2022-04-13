@@ -26,6 +26,12 @@ class MovieController extends AbstractController
         $this->movieService = $movieService;
     }
 
+    #[Route('/', name: 'movies')]
+    public function getMovies(Request $request): Response
+    {
+        return $this->redirectToRoute('movies_popular');
+    }
+
     #[Route('/movies/popular/{page}', name: 'movies_popular')]
     public function getPopularByPage(Request $request, $page = 1): Response
     {

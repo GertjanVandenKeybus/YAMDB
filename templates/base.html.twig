@@ -12,7 +12,7 @@
     {% if page > 1 %}
     <a href="{{ path('movies_popular') ~ '/' ~ (page-1) }}"><</a>
     {% endif %}
-    <a href="{{ path('movies_popular') }}">{{ maxPages }}</a>
+    <a href="{{ path('movies_popular') }}">Movies</a>
     {%  if page < maxPages %}
     <a href="{{ path('movies_popular') ~ '/' ~ (page+1) }}">></a>
     {% endif %}
