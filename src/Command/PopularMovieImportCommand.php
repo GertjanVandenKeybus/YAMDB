@@ -75,7 +75,7 @@ class PopularMovieImportCommand extends Command
                     $id = $movie['id'];
                     $movieCredits = $this->TMDBApiWrapper->get("https://api.themoviedb.org/3/movie/$id/credits", []);
                     $director = $this->getDirectorFromCredits($movieCredits);
-                    $this->movieService->addMovieFromData($id, $movie['title'], $director, $movie['release_date'], $movie['overview']);
+                    $this->movieService->addMovieFromData($id, $movie['title'], $director, $movie['release_date'], $movie['overview'], $movie['poster_path']);
                     $counter++;
                 }
             } catch (ClientExceptionInterface | DecodingExceptionInterface | RedirectionExceptionInterface | ServerExceptionInterface | TransportExceptionInterface | OptimisticLockException | ORMException $e) {

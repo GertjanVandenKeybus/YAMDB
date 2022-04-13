@@ -2,33 +2,62 @@
 
 namespace App\Controller;
 
+use App\Service\MovieService;
 use App\Service\TMDBApiWrapper;
+use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MovieController extends AbstractController
 {
     private TMDBApiWrapper $TMDBApiWrapper;
+    private MovieService $movieService;
 
-    public function __construct(TMDBApiWrapper $TMDBApiWrapper)
+    public function __construct(TMDBApiWrapper $TMDBApiWrapper, MovieService $movieService)
     {
         $this->TMDBApiWrapper = $TMDBApiWrapper;
+        $this->movieService = $movieService;
     }
 
-    #[Route('/movies/popular')]
-    public function getPopular(Request $request): Response
+    #[Route('/movies/popular/{page}', name: 'movies_popular')]
+    public function getPopularByPage(Request $request, $page = 1): Response
     {
-        $counter=0;
-        for ($i = 1; $i <= 5; $i++) {
-            $popularMoviesList = $this->TMDBApiWrapper->get('https://api.themoviedb.org/3/movie/popular', ['page' => $i, 'language' => 'en-US']);
-            $counter+=count($popularMoviesList['results']);
-        }
-        $response = new Response();
-        $response->setContent(json_encode($counter));
-        $response->headers->set('Content-Type', 'application/json');
+        $movies = $this->movieService->listMoviesByPage($page);
 
-        return $response;
+        return $this->render('movie/list.html.twig', [
+            'movies' => $movies,
+            'page' => $page,
+            'maxPages' => count($movies)/5
+        ]);
+    }
+
+    #[Route('/movies/import/{pages}', name: 'movies_import')]
+    public function debugTwig(KernelInterface $kernel, $pages = 1): Response
+    {
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+
+        $input = new ArrayInput([
+            'command' => 'app:import-popular-movies',
+            'pages' => $pages
+        ]);
+
+        $output = new BufferedOutput(
+            OutputInterface::VERBOSITY_NORMAL,
+            true // true for decorated
+        );
+        $application->run($input, $output);
+
+        $converter = new AnsiToHtmlConverter();
+        $content = $output->fetch();
+
+        return new Response($converter->convert($content));
     }
 }

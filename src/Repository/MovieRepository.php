@@ -6,6 +6,7 @@ use App\Entity\Movie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -43,5 +44,25 @@ class MovieRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+
+    public function getAllMovies($currentPage = 1): Paginator
+    {
+        // Create our query
+        $query = $this->createQueryBuilder('m')
+            ->getQuery();
+
+        return $this->paginate($query, $currentPage);
+    }
+
+    private function paginate($dql, $page = 1, $limit = 5): Paginator
+    {
+        $paginator = new Paginator($dql);
+
+        $paginator->getQuery()
+            ->setFirstResult($limit * ($page - 1)) // Offset
+            ->setMaxResults($limit); // Limit
+
+        return $paginator;
     }
 }

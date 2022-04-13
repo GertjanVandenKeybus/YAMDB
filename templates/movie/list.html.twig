@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <ul class="list">
+        {% for movie in movies %}
+            <li>
+                {% if movie.posterUrl is defined %}
+                    <img src="{{ movie.posterUrl }}?h=480" alt="{{ movie.title }}"/>
+                {% endif %}
+
+                <h3>{{ movie.title }} ({{ movie.releaseYear }})</h3>
+                <p class="movies-list__directed-by">Directed by {{ movie.director ?? '<unknown>' }}</p>
+                <p class="movies-list__directed-by">{{ movie.description }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

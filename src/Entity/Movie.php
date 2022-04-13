@@ -14,20 +14,23 @@ class Movie
     #[ORM\Column(type: 'integer')]
     private int $id;
 
-    #[ORM\Column(type: 'integer')]
-    private int $tmdb_id;
+    #[ORM\Column(name: 'tmdb_id', type: 'integer')]
+    private int $tmdbId;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(name: 'title', type: 'string', length: 255)]
     private string $title;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(name: 'director', type: 'string', length: 255, nullable: true)]
     private string $director;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private int $release_year;
+    #[ORM\Column(name: 'release_year', type: 'integer', nullable: true)]
+    private int $releaseYear;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(name: 'description', type: 'text', nullable: true)]
     private string $description;
+
+    #[ORM\Column(name: 'poster_url', type: 'string', length: 255, nullable: true)]
+    private string $posterUrl;
 
     public function getId(): ?int
     {
@@ -60,12 +63,12 @@ class Movie
 
     public function getReleaseYear(): ?int
     {
-        return $this->release_year;
+        return $this->releaseYear;
     }
 
-    public function setReleaseYear(?int $release_year): self
+    public function setReleaseYear(?int $releaseYear): self
     {
-        $this->release_year = $release_year;
+        $this->releaseYear = $releaseYear;
 
         return $this;
     }
@@ -87,14 +90,30 @@ class Movie
      */
     public function getTmdbId(): int
     {
-        return $this->tmdb_id;
+        return $this->tmdbId;
     }
 
     /**
      * @param mixed $tmdb_id
      */
-    public function setTmdbId($tmdb_id): void
+    public function setTmdbId($tmdbId): void
     {
-        $this->tmdb_id = $tmdb_id;
+        $this->tmdbId = $tmdbId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPosterUrl(): string
+    {
+        return $this->posterUrl;
+    }
+
+    /**
+     * @param string $posterUrl
+     */
+    public function setPosterUrl(string $posterUrl): void
+    {
+        $this->posterUrl = $posterUrl;
     }
 }
