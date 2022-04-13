@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\MovieRepository;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Integer;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 class Movie
@@ -11,19 +12,22 @@ class Movie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private int $id;
+
+    #[ORM\Column(type: 'integer')]
+    private int $tmdb_id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $title;
+    private string $title;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $director;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private string $director;
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    private $release_year;
+    private int $release_year;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    private $description;
+    private string $description;
 
     public function getId(): ?int
     {
@@ -76,5 +80,21 @@ class Movie
         $this->description = $description;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTmdbId(): int
+    {
+        return $this->tmdb_id;
+    }
+
+    /**
+     * @param mixed $tmdb_id
+     */
+    public function setTmdbId($tmdb_id): void
+    {
+        $this->tmdb_id = $tmdb_id;
     }
 }
